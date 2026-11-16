@@ -95,6 +95,19 @@ public:
                                int strideH, int strideW, int padH, int padW,
                                DeviceType dev);
 
+    static void batchNorm2dForward(const float* in, float* out,
+                                   const float* gamma, const float* beta,
+                                   float* runningMean, float* runningVar,
+                                   float* saveMean, float* saveInvVar,
+                                   int N, int C, int H, int W,
+                                   float eps, float momentum, bool training,
+                                   DeviceType dev);
+    static void batchNorm2dBackward(const float* gradOut, const float* in, float* gradIn,
+                                    const float* gamma, float* gradGamma, float* gradBeta,
+                                    const float* saveMean, const float* saveInvVar,
+                                    int N, int C, int H, int W,
+                                    DeviceType dev);
+
     static void bceWithLogitsForward(const float* logits, const float* targets, float* loss,
                                      size_t n, DeviceType dev);
     static void bceWithLogitsBackward(const float* logits, const float* targets, float* gradLogits,
@@ -103,6 +116,11 @@ public:
     static void sgdUpdate(float* weight, const float* grad, float* velocity,
                           size_t n, float lr, float momentum, float weightDecay,
                           DeviceType dev);
+
+    // Linear / general tensor elementwise helpers
+    static void addBias2D(float* data, const float* bias, int batchSize, int features, DeviceType dev);
+    static void sumRows(const float* gradOut, float* gradBias, int rows, int cols, DeviceType dev);
+    static void accumulate(float* dst, const float* src, size_t n, DeviceType dev);
 
     // Internal error check helpers
     static void checkCuda(int status, const char* file, int line);
